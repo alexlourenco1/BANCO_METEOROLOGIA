@@ -1,3 +1,17 @@
+
+output/*
+
+
+
+
+
+
+
+###################
+# IGNORE'S PADRÃO #
+###################
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
