@@ -1,5 +1,6 @@
 import tok_prec_rede
 import atualiza_sqlite3
+import gera_banco_excel
 import pendulum
 import time
 
@@ -41,3 +42,12 @@ atualiza_sqlite3.preenche_previsoes_ECMWF(caminho_banco,data_string=data)
 atualiza_sqlite3.preenche_previsoes_GEFS(caminho_banco,data_string=data)
 
 print('>>>>>>>>>> ROTINA FINALIZADA')
+
+
+print('''
+##########################################
+# GERA BANCO EM EXCEL PARA PBI PUBLICADO #
+##########################################
+''')
+
+gera_banco_excel.main(hoje=True)

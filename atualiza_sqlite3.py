@@ -35,8 +35,16 @@ depara_bacia_subsistema = {'alto_grande': 'sudeste',
 # CARREGA DADOS BAIXADOS NO BANCO "RELACIONAL" #
 ################################################
 def preenche_observado(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
-    
-    
+    """Preenche os dados observado no .db com base no arquivo chuva_observada.db.dat
+
+    Args:
+        caminho_banco (str): caminho até a pasta raiz do banco de dados
+        data_string (str, optional): data requerida no formato (DD-MM-YYYY). Defaults to None.
+        hoje (bool, optional): True para habilitar a data atual. Defaults to False.
+
+    Returns:
+        str: mensagem de sucesso
+    """
     data_requerida = pendulum.today('America/Sao_Paulo') if hoje else pendulum.from_format(data_string, 'DD-MM-YYYY')
     observado_string = data_requerida.subtract(days=1).format('DD-MM-YYYY')
 
@@ -59,7 +67,7 @@ def preenche_observado(caminho_banco:str, data_string:str=None, hoje:bool=False)
         c.execute(f""" INSERT OR REPLACE INTO CHUVA_OBSERVADA (data, bacia, subsistema, precipitacao, clima, anomalia, fonte)
         VALUES ('{observado_string}', '{bacia}', '{depara_bacia_subsistema[bacia]}', {valor}, {clima_diario_bacia}, {anomalia}, 'tok-merge')
         """)
-            
+
     conexao.commit()
     c.close()
     bd.close()
@@ -69,7 +77,16 @@ def preenche_observado(caminho_banco:str, data_string:str=None, hoje:bool=False)
 
 # PREENCHE OBSERVADO NO GEFS E EC
 def preenche_observado_nas_previsoes(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
-    
+    """Inclui nas tabelas de previsões APENAS os dados observados.
+
+    Args:
+        caminho_banco (str): caminho até a pasta raiz do banco de dados
+        data_string (str, optional): data requerida no formato (DD-MM-YYYY). Defaults to None.
+        hoje (bool, optional): True para habilitar a data atual. Defaults to False.
+
+    Returns:
+        str: mensagem de sucesso
+    """
     
     data_requerida = pendulum.today('America/Sao_Paulo') if hoje else pendulum.from_format(data_string, 'DD-MM-YYYY')
     observado_string = data_requerida.subtract(days=1).format('DD-MM-YYYY')
@@ -102,6 +119,7 @@ def preenche_observado_nas_previsoes(caminho_banco:str, data_string:str=None, ho
             VALUES ('{data_rodada}', '{observado_string}', '{bacia}', '{subsistema}', {precipitacao},
             {clima}, {observado}, {anomalia_clima}, {anomalia_realizado}, '{fonte}') 
             """)
+            
     conexao.commit()
     c.close()
 
@@ -109,7 +127,16 @@ def preenche_observado_nas_previsoes(caminho_banco:str, data_string:str=None, ho
 
 
 def preenche_previsoes_ECMWF(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
+    """Preenche as previsões no arquivo .db com base no arquivo chuva_prevista.db.dat
 
+    Args:
+        caminho_banco (str): caminho até a pasta raiz do banco de dados
+        data_string (str, optional): data requerida no formato (DD-MM-YYYY). Defaults to None.
+        hoje (bool, optional): True para habilitar a data atual. Defaults to False.
+
+    Returns:
+        str: mensagem de sucesso.
+    """
     data_requerida = pendulum.today('America/Sao_Paulo') if hoje else pendulum.from_format(data_string, 'DD-MM-YYYY')
     observado_string = data_requerida.subtract(days=1).format('DD-MM-YYYY')
     data_requerida_string = data_requerida.format('DD-MM-YYYY')
@@ -157,6 +184,8 @@ def preenche_previsoes_ECMWF(caminho_banco:str, data_string:str=None, hoje:bool=
         VALUES ('{data_rodada}', '{coluna_previsto}', '{bacia}', '{depara_bacia_subsistema[bacia]}', {valor_prec},
         {clima_diario_bacia}, {observado}, {anomalia_clima}, {anomalia_realizado}, '{fonte_modelo}') 
         """)
+
+
     conexao.commit()
     c.close()
     bd.close()
@@ -165,7 +194,16 @@ def preenche_previsoes_ECMWF(caminho_banco:str, data_string:str=None, hoje:bool=
     return print('Dados de chuva observada preenchidos na tabela ECMWF_BACIA')
 
 def preenche_previsoes_GEFS(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
+    """Preenche as previsões no arquivo .db com base no arquivo chuva_prevista.db.dat
 
+    Args:
+        caminho_banco (str): caminho até a pasta raiz do banco de dados
+        data_string (str, optional): data requerida no formato (DD-MM-YYYY). Defaults to None.
+        hoje (bool, optional): True para habilitar a data atual. Defaults to False.
+
+    Returns:
+        str: mensagem de sucesso.
+    """
     data_requerida = pendulum.today('America/Sao_Paulo') if hoje else pendulum.from_format(data_string, 'DD-MM-YYYY')
     observado_string = data_requerida.subtract(days=1).format('DD-MM-YYYY')
     data_requerida_string = data_requerida.format('DD-MM-YYYY')
@@ -215,6 +253,7 @@ def preenche_previsoes_GEFS(caminho_banco:str, data_string:str=None, hoje:bool=F
         VALUES ('{data_rodada}', '{coluna_previsto}', '{bacia}', '{depara_bacia_subsistema[bacia]}', {valor_prec},
         {clima_diario_bacia}, {observado}, {anomalia_clima}, {anomalia_realizado}, '{fonte_modelo}') 
         """)
+            
     conexao.commit()
     c.close()
     bd.close()
