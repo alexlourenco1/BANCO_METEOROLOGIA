@@ -1,4 +1,4 @@
-import pendulum
+﻿import pendulum
 import requests
 from pathlib import Path
 import os
@@ -16,7 +16,7 @@ token = os.getenv('TOKEN_TOK')
 data = pendulum.now('America/Sao_Paulo')
 
 
-caminho_base = 'C:/scripts/BOLETIM-ENEVA/'
+caminho_base = 'C:/scripts/BANCO_METEOROLOGIA/'
 caminho_bancodedados = r'J:\SEDE\Comercializadora de Energia\6. MIDDLE\29.DESENVOLVIMENTO\02.dash_meteorologia\bases'
 diretorio_saida = Path(f'{caminho_base}/output/diario', data.format('YYYY'), data.format('MM'), data.format('DD'))
 diretorio_saida.mkdir(exist_ok=True, parents=True)

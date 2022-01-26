@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 from typing import Any
 import pandas as pd
 import pendulum
@@ -6,7 +6,7 @@ import pendulum
 caminho_bd = r'J:\SEDE\Comercializadora de Energia\6. MIDDLE\29.DESENVOLVIMENTO\02.dash_meteorologia\bases'
 #caminho_bd = r'C:\scripts\BOLETIM-ENEVA\mapas'
 banco = 'banco_de_dados_meteorologia.db'
-caminho_saida_excel = 'C:\scripts'
+caminho_saida_excel = r'C:\Users\Middle\OneDrive - Eneva S.A\5.Meteorologia_dados'
 
 
 def retorna_datas(data_requerida:pendulum.datetime) -> dict:
