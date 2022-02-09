@@ -45,6 +45,9 @@ cd BANCO_METEOROLOGIA
 
 # 3. instale/reproduza o ambiente
 conda env create -f env.yaml
+
+# 4. crie um arquivo ".env" salvando o token da TOK. Crie um .env na pasta raiz com o seguinte conteúdo
+TOKEN_TOK="abc123 seu TOKEN aleatório vai aqui abc123"
 ```
 
 ## :arrow_forward: Execução
@@ -53,9 +56,7 @@ conda env create -f env.yaml
 
 ## :construction: Desenvolvimento
 
-:dart: Apagar pastas com txt's da TempoOK : Rotina de exclusão de arquivos desnecessários   
-
-:dart: Rodar dia específico: Automatizar de forma simplificada no main.py a execução de outros dias, fora o atual.    
+:dart: Apagar pastas com txt's da TempoOK : Rotina de exclusão de arquivos desnecessários    
 
 :dart: Adaptar caminhos: Arquivo .db é salvo em middle/29.DESENVOLVIMENTO... e o excel no onedrive. Deve-se padronizar estes caminhos na rede.
 
