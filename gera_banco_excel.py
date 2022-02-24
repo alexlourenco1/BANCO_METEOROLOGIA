@@ -96,7 +96,7 @@ def main(hoje:bool=False, data_string:str=None) -> None:
         else:
             # Pega o trecho de dados que serão salvos no excel
             data_inic = datas['data_inicio'].format('DD-MM-YYYY')
-            data_final = datas['data_anterior'].format('DD-MM-YYYY') if tabela[0]=='CHUVA_OBSERVADA' else datas['data'].format('DD-MM-YYYY')
+            data_final = datas['data'].format('DD-MM-YYYY')
 
             df = seleciona_dados(tabela[0], data_inic, data_final, conn)
             df.to_excel(excel, sheet_name=tabela[0])
