@@ -8,14 +8,19 @@ caminho_banco = r'J:\SEDE\Comercializadora de Energia\6. MIDDLE\29.DESENVOLVIMEN
 
 
 data = pendulum.now('America/Sao_Paulo').format('DD-MM-YYYY')
-#data = '18-01-2022' # para carregar datas que não sejam hoje, descomente essa linha
+# data necessária para coleta do dado mais recente realizado 12ZONTEM a 12ZHOJE 
+data_seguinte_tok = pendulum.now('America/Sao_Paulo').add(days=1).format('DD-MM-YYYY')
+
+# para carregar datas que não sejam hoje, descomente as linhas abaixo
+#data = '18-01-2022' 
+#data_seguinte_tok ='19-01-2022'
 
 print('''
 ######################
 # BAIXA DADOS DA TOK #
 ######################
 ''')
-modelos_tok = ['MERGE', 'GEFSav', 'ECENSav']
+modelos_tok = ['MERGE', 'MERGE-TOK10', 'GEFSav', 'ECENSav']
 
 for modelo in modelos_tok:
     modelo_disponivel = False
@@ -37,7 +42,9 @@ print('''
 ######################################
 ''')
 atualiza_sqlite3.preenche_observado(caminho_banco,data_string=data)
+atualiza_sqlite3.preenche_observado(caminho_banco,data_string=data_seguinte_tok)
 atualiza_sqlite3.preenche_observado_nas_previsoes(caminho_banco,data_string=data)
+atualiza_sqlite3.preenche_observado_nas_previsoes(caminho_banco,data_string=data_seguinte_tok)
 atualiza_sqlite3.preenche_previsoes_ECMWF(caminho_banco,data_string=data)
 atualiza_sqlite3.preenche_previsoes_GEFS(caminho_banco,data_string=data)
 

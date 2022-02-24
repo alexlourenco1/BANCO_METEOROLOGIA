@@ -1,3 +1,7 @@
+""" 
+ATUALIZA SQLITE3 (MINI BANCO DE DADOS RELACIONAL) PARA COMPATIBILIZAÇÃO COM POWER BI
+"""
+
 import sqlite3
 import shelve
 import pandas as pd
@@ -270,9 +274,14 @@ if __name__ == "__main__":
 
     data = pendulum.now('America/Sao_Paulo').format('DD-MM-YYYY')
     #data = '19-01-2022'
+    # data necessária para coleta do dado mais recente realizado 12ZONTEM a 12ZHOJE 
+    data_seguinte_tok = pendulum.now('America/Sao_Paulo').add(days=1).format('DD-MM-YYYY')
+    
 
     preenche_observado(caminho_banco=caminho_banco,data_string=data)
+    preenche_observado(caminho_banco=caminho_banco,data_string=data_seguinte_tok)
     preenche_observado_nas_previsoes(caminho_banco=caminho_banco, data_string=data)
+    preenche_observado_nas_previsoes(caminho_banco=caminho_banco, data_string=data_seguinte_tok)
     preenche_previsoes_ECMWF(caminho_banco=caminho_banco, data_string=data)
     preenche_previsoes_GEFS(caminho_banco=caminho_banco, data_string=data)
 
