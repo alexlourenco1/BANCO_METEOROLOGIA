@@ -11,7 +11,7 @@ import pandas as pd
 import shelve
 import time
 import shutil
-import config
+from src import config
 
 
 ##########################

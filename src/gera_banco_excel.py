@@ -2,7 +2,7 @@
 from typing import Any
 import pandas as pd
 import pendulum
-import config
+from src import config
 
 caminho_bd = config.caminho_bancodedados
 #caminho_bd = r'C:\scripts\BOLETIM-ENEVA\mapas'

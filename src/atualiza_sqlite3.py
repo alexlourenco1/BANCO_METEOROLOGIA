@@ -6,7 +6,7 @@ import sqlite3
 import shelve
 import pandas as pd
 import pendulum
-import config
+from src import config
 
 ####################
 # DADOS DE ENTRADA #
