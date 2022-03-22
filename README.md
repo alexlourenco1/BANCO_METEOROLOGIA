@@ -51,7 +51,10 @@ TOKEN_TOK="abc123 seu TOKEN aleatório vai aqui abc123"
 ```
 
 ## :arrow_forward: Execução
-### Para executar a rotina (para o dia atual), execute (duplo clique) o arquivo "executa_main.bat"
+
+:fast_forward: Para colocar no agendador do windows ou rodar o dia atual (horário de Brasília): execute (duplo clique) o arquivo "executa_main.bat".    
+
+:fast_forward: Para executar/carregar datas anteriores: execute (duplo clique) o arquivo "executa_data_especifica.bat" e digite a data de interesse.  
 
 
 ## :construction: Desenvolvimento
