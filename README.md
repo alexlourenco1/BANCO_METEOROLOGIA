@@ -59,17 +59,17 @@ TOKEN_TOK="abc123 seu TOKEN aleatório vai aqui abc123"
 
 ## :construction: Desenvolvimento
 
-:dart: Apagar pastas com txt's da TempoOK : Rotina de exclusão de arquivos desnecessários    
-
-:dart: Adaptar caminhos: Arquivo .db é salvo em middle/29.DESENVOLVIMENTO... e o excel no onedrive. Deve-se padronizar estes caminhos na rede.
+:dart:
 
 ## :rotating_light: Como rodar
 
-### Para executar a rotina (para o dia atual), execute (duplo clique) o arquivo "executa_main.bat"
+:fast_forward: Para colocar no agendador do windows ou rodar o dia atual (horário de Brasília): execute (duplo clique) o arquivo "executa_main.bat".    
+
+:fast_forward: Para executar/carregar datas anteriores: execute (duplo clique) o arquivo "executa_data_especifica.bat" e digite a data de interesse.  
 
 
 ## :green_apple: I/O
 
 Os Inputs/entradas ficam armazenados em ```outuput```.   
-Os outputs/saídas vão para ```middle/29.DESENVOLVIMENTO/02.dash_meteorologia/bases```.
+Os outputs/saídas vão para ```6. MIDDLE\03.PLANILHAS\BASES_DASH_METEOROLOGIA```.  
 
