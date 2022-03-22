@@ -17,7 +17,7 @@ from src import config
 ##########################
 # DEFINIÇÃO DE VARIÁVEIS #
 ##########################
-load_dotenv(config.caminho_env)
+load_dotenv()
 token = os.getenv('TOKEN_TOK')
 data = pendulum.now('America/Sao_Paulo')
 
