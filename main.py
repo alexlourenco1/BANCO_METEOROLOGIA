@@ -10,9 +10,9 @@ caminho_banco = config.caminho_bancodedados
 # Abre para o usuário um campo para inserir a data
 data_input = input("Digite a data requisitada no formato [DD-MM-YYYY] ou pressione Enter para data atual: ")
 
-data = pendulum.now('America/Sao_Paulo') if data_input == "" else pendulum.from_format(data_input, "DD-MM-YYYY")
+data = pendulum.now('America/Sao_Paulo').format('DD-MM-YYYY') if data_input == "" else data_input
 # data necessária para coleta do dado mais recente realizado 12ZONTEM a 12ZHOJE 
-data_seguinte_tok = data.add(days=1).format('DD-MM-YYYY')
+data_seguinte_tok = pendulum.from_format(data,'DD-MM-YYYY').add(days=1).format('DD-MM-YYYY')
 
 # para carregar datas que não sejam hoje direto no código, descomente as linhas abaixo
 #data = '18-01-2022' 
