@@ -5,8 +5,8 @@ rem Ativa o ambiente conda
 call C:\ProgramData\Miniconda3\Scripts\activate.bat C:/Users/Middle/.conda/envs/banco_meteorologia
 rem Executa o script com a partir do ambiente conda que foi ativado
 
-rem executa python com data atual {dando ENTER}
-echo.| call python main.py
+rem executa python
+call python main.py
 
 rem Dá 10 segundos, para uma breve leitura, e fecha a aba.
 timeout 10
