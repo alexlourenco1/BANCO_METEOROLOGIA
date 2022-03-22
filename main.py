@@ -1,17 +1,20 @@
-import tok_prec_rede
-import atualiza_sqlite3
-import gera_banco_excel
 import pendulum
 import time
+from src import tok_prec_rede
+from src import atualiza_sqlite3
+from src import gera_banco_excel
+from src import config
 
-caminho_banco = r'J:\SEDE\Comercializadora de Energia\6. MIDDLE\29.DESENVOLVIMENTO\02.dash_meteorologia\bases'
+caminho_banco = config.caminho_bancodedados
 
+# Abre para o usuário um campo para inserir a data
+data_input = input("Digite a data requisitada no formato [DD-MM-YYYY] ou pressione Enter para data atual: ")
 
-data = pendulum.now('America/Sao_Paulo').format('DD-MM-YYYY')
+data = pendulum.now('America/Sao_Paulo') if data_input == "" else pendulum.from_format(data_input, "DD-MM-YYYY")
 # data necessária para coleta do dado mais recente realizado 12ZONTEM a 12ZHOJE 
-data_seguinte_tok = pendulum.now('America/Sao_Paulo').add(days=1).format('DD-MM-YYYY')
+data_seguinte_tok = data.add(days=1).format('DD-MM-YYYY')
 
-# para carregar datas que não sejam hoje, descomente as linhas abaixo
+# para carregar datas que não sejam hoje direto no código, descomente as linhas abaixo
 #data = '18-01-2022' 
 #data_seguinte_tok ='19-01-2022'
 
@@ -35,6 +38,8 @@ for modelo in modelos_tok:
             time.sleep(60)
 
     tok_prec_rede.sobe_previsao_no_banco(caminho_banco,df_, modelo, data_string=data)
+
+tok_prec_rede.deleta_pastas(path=f'{config.caminho_base}/output')
 
 print('''
 ######################################
