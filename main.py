@@ -23,7 +23,7 @@ print('''
 # BAIXA DADOS DA TOK #
 ######################
 ''')
-modelos_tok = ['MERGE', 'MERGE-TOK10', 'GEFSav', 'ECENSav']
+modelos_tok = ['MERGE', 'MERGE-TOK10', 'GEFSav', 'ECENSav', 'CFS45av']
 
 for modelo in modelos_tok:
     modelo_disponivel = False
@@ -52,6 +52,7 @@ atualiza_sqlite3.preenche_observado_nas_previsoes(caminho_banco,data_string=data
 atualiza_sqlite3.preenche_observado_nas_previsoes(caminho_banco,data_string=data_seguinte_tok)
 atualiza_sqlite3.preenche_previsoes_ECMWF(caminho_banco,data_string=data)
 atualiza_sqlite3.preenche_previsoes_GEFS(caminho_banco,data_string=data)
+atualiza_sqlite3.preenche_previsoes_CFS(caminho_banco=caminho_banco, data_string=data)
 
 print('>>>>>>>>>> ROTINA FINALIZADA')
 

@@ -14,7 +14,7 @@ from src import config
 caminho_banco = config.caminho_bancodedados
 
 # tabelas apenas de modelos de previsão para uso na função preenche_observado_nas_previsoes()
-tabelas = ['GEFS_BACIA', 'ECMWF_BACIA']
+tabelas = ['GEFS_BACIA', 'ECMWF_BACIA', 'CFS_BACIA']
 
 depara_bacia_subsistema = {'alto_grande': 'sudeste',
  'alto_parana': 'sudeste',
@@ -80,7 +80,7 @@ def preenche_observado(caminho_banco:str, data_string:str=None, hoje:bool=False)
     return print('Dados de chuva observada preenchidos na tabela CHUVA_OBSERVADA')
 
 
-# PREENCHE OBSERVADO NO GEFS E EC
+# PREENCHE OBSERVADO NO GEFS, EC E CFS
 def preenche_observado_nas_previsoes(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
     """Inclui nas tabelas de previsões APENAS os dados observados.
 
@@ -267,6 +267,75 @@ def preenche_previsoes_GEFS(caminho_banco:str, data_string:str=None, hoje:bool=F
     return print('Dados de chuva observada preenchidos na tabela GEFS_BACIA')
 
 
+def preenche_previsoes_CFS(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
+    """Preenche as previsões no arquivo .db com base no arquivo chuva_prevista.db.dat
+
+    Args:
+        caminho_banco (str): caminho até a pasta raiz do banco de dados
+        data_string (str, optional): data requerida no formato (DD-MM-YYYY). Defaults to None.
+        hoje (bool, optional): True para habilitar a data atual. Defaults to False.
+
+    Returns:
+        str: mensagem de sucesso.
+    """
+    data_requerida = pendulum.today('America/Sao_Paulo') if hoje else pendulum.from_format(data_string, 'DD-MM-YYYY')
+    observado_string = data_requerida.subtract(days=1).format('DD-MM-YYYY')
+    data_requerida_string = data_requerida.format('DD-MM-YYYY')
+
+    conexao=sqlite3.connect(f'{caminho_banco}/banco_de_dados_meteorologia.db')
+    c = conexao.cursor()
+    bd = shelve.open(f'{caminho_banco}/chuva_observada.db')
+    bd_prev = shelve.open(f'{caminho_banco}/chuva_prevista.db')
+
+    df_clima = pd.read_sql('select * from CHUVA_DIARIA_CLIMA', conexao)
+    df_clima = df_clima.set_index('data')
+    clima_diario = df_clima.loc[observado_string[:5]]
+    clima_diario = clima_diario.set_index('bacia')
+
+    # PREENCHE NOVAS PREVISÕES NO CFS
+    registro = f'tok_CFS45av_{data_requerida_string}'
+
+
+    df_prev = pd.read_json(bd_prev[registro], orient='records').set_index('index')
+
+    data_rodada = registro[-10:]
+    separacao_string = registro.partition('_')
+    fonte_modelo = separacao_string[0]
+
+    for coluna_previsto in df_prev.columns:
+        for bacia in df_prev.index:
+
+            valor_prec = df_prev[coluna_previsto][bacia]
+
+            clima_diario = df_clima.loc[coluna_previsto[:5]]
+            clima_diario = clima_diario.set_index('bacia')
+            clima_diario_bacia = clima_diario["precipitacao"][bacia]
+
+            anomalia_clima = valor_prec - clima_diario_bacia
+
+            try:
+                ds = pd.read_json(bd[coluna_previsto], orient='records').set_index('index')
+                observado = ds['d0'][bacia]
+                anomalia_realizado = observado - valor_prec
+            except:
+                observado = 0
+                anomalia_realizado = 0
+
+
+            c.execute(f""" INSERT OR REPLACE INTO CFS_BACIA (data_rodada, data_previsao, bacia, subsistema, precipitacao, clima,
+            observado, anomalia_clima, anomalia_realizado, fonte)
+        VALUES ('{data_rodada}', '{coluna_previsto}', '{bacia}', '{depara_bacia_subsistema[bacia]}', {valor_prec},
+        {clima_diario_bacia}, {observado}, {anomalia_clima}, {anomalia_realizado}, '{fonte_modelo}') 
+        """)
+            
+    conexao.commit()
+    c.close()
+    bd.close()
+    bd_prev.close()
+
+    return print('Dados de chuva observada preenchidos na tabela CFS_BACIA')
+
+
 if __name__ == "__main__":
 
     import pendulum
@@ -286,5 +355,6 @@ if __name__ == "__main__":
     preenche_observado_nas_previsoes(caminho_banco=caminho_banco, data_string=data_seguinte_tok)
     preenche_previsoes_ECMWF(caminho_banco=caminho_banco, data_string=data)
     preenche_previsoes_GEFS(caminho_banco=caminho_banco, data_string=data)
+    preenche_previsoes_CFS(caminho_banco=caminho_banco, data_string=data)
 
 

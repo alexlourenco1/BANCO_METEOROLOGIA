@@ -197,7 +197,7 @@ if __name__ == '__main__':
     data = pendulum.now('America/Sao_Paulo').format('DD-MM-YYYY')
     #data = '19-01-2022'
 
-    modelos_tok = ['MERGE','MERGE-TOK10', 'GEFSav', 'ECENSav']
+    modelos_tok = ['MERGE','MERGE-TOK10', 'GEFSav', 'ECENSav', 'CFS45av']
 
     for modelo in modelos_tok:
         
