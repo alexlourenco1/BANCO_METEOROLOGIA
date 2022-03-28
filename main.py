@@ -63,4 +63,4 @@ print('''
 ##########################################
 ''')
 
-gera_banco_excel.main(hoje=True)
+gera_banco_excel.main(data_string=data)
