@@ -1,4 +1,10 @@
-﻿import sqlite3
+﻿"""
+Vai ao banco de dados SQLite3, iterando em todas as tabelas
+Recorta dados de 20/12/ano_anterior até (hoje ou data_requisitada)
+gera base em excel
+"""
+
+import sqlite3
 from typing import Any
 import pandas as pd
 import pendulum
@@ -62,7 +68,9 @@ def seleciona_dados(tabela:str, data_inic:str, data_final:str, conn:sqlite3.Conn
     return dado_selecionado
 
 def main(hoje:bool=False, data_string:str=None) -> None:
-    """Função Principal
+    """Função Principal.
+
+    Vai até
 
     Args:
         hoje (bool, optional): True para usar a data atual. Defaults to False.
@@ -95,12 +103,23 @@ def main(hoje:bool=False, data_string:str=None) -> None:
             df.to_excel(excel, sheet_name=tabela[0])
             
         else:
-            # Pega o trecho de dados que serão salvos no excel
+            # Pega o range das datas que serão salvas no excel
             data_inic = datas['data_inicio'].format('DD-MM-YYYY')
-            data_final = datas['data'].format('DD-MM-YYYY')
+            data_final_requerida = datas['data'].format('DD-MM-YYYY')
+            data_final = pendulum.now('America/Sao_Paulo').format('DD-MM-YYYY')
 
-            df = seleciona_dados(tabela[0], data_inic, data_final, conn)
-            df.to_excel(excel, sheet_name=tabela[0])
+            try:
+                # Pega da data inicial até hoje | funciona no operacional automatizado diário
+                # objetivo: Para ocasiões de preenchimento de dados de dias faltantes
+                # Trativa: Não trazer na base até somente o dia recarregado. 
+                df = seleciona_dados(tabela[0], data_inic, data_final, conn)
+                df.to_excel(excel, sheet_name=tabela[0])
+            except:
+                # Pega a data inicial até a data requisitada | funciona no operacional automatizado diário
+                # objetivo: Para preencher ultimas datas, caso o processo tenha parado
+                # Tratativa: Caso não tenha todos os últimos dias, não retornar erro ao tentar recortar do inicio até "hoje"
+                df = seleciona_dados(tabela[0], data_inic, data_final_requerida, conn)
+                df.to_excel(excel, sheet_name=tabela[0])
     
     conn.commit()
     cursor.close()
