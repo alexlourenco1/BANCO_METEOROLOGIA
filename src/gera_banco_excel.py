@@ -92,7 +92,7 @@ def main(hoje:bool=False, data_string:str=None) -> None:
     tabelas = cursor.fetchall()
     
     # Prepara um excel para salvar os dados
-    excel = pd.ExcelWriter(f'{caminho_saida_excel}/banco_de_dados_meteorologia_{data_requerida.format("YYYY")}.xlsx', engine='xlsxwriter')
+    excel = pd.ExcelWriter(f'{caminho_saida_excel}/banco_de_dados_meteorologia.xlsx', engine='xlsxwriter')
     
     for tabela in tabelas:
         print(f' Gerando {tabela[0]}')
