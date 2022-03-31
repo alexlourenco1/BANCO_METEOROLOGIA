@@ -4,6 +4,7 @@ from src import tok_prec_rede
 from src import atualiza_sqlite3
 from src import gera_banco_excel
 from src import config
+from src.logit import log
 
 caminho_banco = config.caminho_bancodedados
 
@@ -18,30 +19,36 @@ data_seguinte_tok = pendulum.from_format(data,'DD-MM-YYYY').add(days=1).format('
 #data = '18-01-2022' 
 #data_seguinte_tok ='19-01-2022'
 
-print('''
+log.info('''
 ######################
 # BAIXA DADOS DA TOK #
 ######################
 ''')
-modelos_tok = ['MERGE', 'MERGE-TOK10', 'GEFSav', 'ECENSav', 'CFS45av']
+modelos_tok = ['IMERG', 'MERGE', 'IMERG-TOK10', 'MERGE-TOK10', 'GEFSav', 'ECENSav', 'CFS45av']
 
 for modelo in modelos_tok:
     modelo_disponivel = False
 
-    while modelo_disponivel == False:
-        arquivo = tok_prec_rede.coleta_dados_ascii_tok(modelo, data_string=data)
-        try:
-            df_ = tok_prec_rede.parser_dados_tok(modelo, arquivo, data_string=data)
-            modelo_disponivel = True
-        except:
-            print(f'{modelo} não disponível. Aguardando 1 minutos antes da próxima requisição.')
-            time.sleep(60)
+    #while modelo_disponivel == False:
+    arquivo = tok_prec_rede.coleta_dados_ascii_tok(modelo, data_string=data)
+    try:
+        df_ = tok_prec_rede.parser_dados_tok(modelo, arquivo, data_string=data)
+        modelo_disponivel = True
 
-    tok_prec_rede.sobe_previsao_no_banco(caminho_banco,df_, modelo, data_string=data)
+        mensagem = ' A versão com IMERG será substituida' if modelo.startswith('MERGE') else ''
+        log.info(f'{modelo} baixado.{mensagem}')
+        
+        tok_prec_rede.sobe_previsao_no_banco(caminho_banco,df_, modelo, data_string=data)
+
+    except:
+        log.error(f'{modelo} não disponível. Passando para próxima requisição')
+        time.sleep(3)
+
+    
 
 tok_prec_rede.deleta_pastas(path=f'{config.caminho_base}/output')
 
-print('''
+log.info('''
 ######################################
 # SOBE DADOS NO BANCO PARA O POWERBI #
 ######################################
@@ -54,10 +61,10 @@ atualiza_sqlite3.preenche_previsoes_ECMWF(caminho_banco,data_string=data)
 atualiza_sqlite3.preenche_previsoes_GEFS(caminho_banco,data_string=data)
 atualiza_sqlite3.preenche_previsoes_CFS(caminho_banco=caminho_banco, data_string=data)
 
-print('>>>>>>>>>> ROTINA FINALIZADA')
+log.info('>>>>>>>>>> ROTINA FINALIZADA')
 
 
-print('''
+log.info('''
 ##########################################
 # GERA BANCO EM EXCEL PARA PBI PUBLICADO #
 ##########################################

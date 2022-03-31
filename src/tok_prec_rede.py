@@ -12,6 +12,7 @@ import shelve
 import time
 import shutil
 from src import config
+from src.logit import log
 
 
 ##########################
@@ -41,7 +42,7 @@ def coleta_dados_ascii_tok(modelo:str,data_string:str=None, hoje:bool=False) -> 
 
     data = pendulum.today('America/Sao_Paulo') if hoje else pendulum.from_format(data_string, 'DD-MM-YYYY')
 
-    data_requisitada = data.subtract(days=1) if modelo == 'MERGE' else data
+    data_requisitada = data.subtract(days=1) if modelo in ['MERGE','IMERG'] else data
     path = f'Comercializadora/Arquivos/bacia_ascii/{modelo}/{data_requisitada.format("YYYY-MM")}'
     arquivo = f'{modelo}_{data_requisitada.format("YYYYMMDD")}T00.dat'
     url = 'https://storage.tempook.com/tokstorage/download_post/'
@@ -106,7 +107,7 @@ def parser_dados_tok(modelo:str, arquivo:str, data_string:str=None, hoje:bool=Fa
     prec = f'{diretorio_saida}/TOK-{arquivo}'
     colunas_do_previsto = ['basin', 'd0','d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10','d11', 'd12', 'd13']
     colunas_do_observado = ['basin', 'd0']
-    colunas_usadas = colunas_do_observado if modelo in ['MERGE','MERGE-TOK10'] else colunas_do_previsto
+    colunas_usadas = colunas_do_observado if modelo in ['MERGE', 'IMERG','MERGE-TOK10', 'IMERG-TOK10'] else colunas_do_previsto
     df = pd.read_csv(prec, index_col='basin',usecols=colunas_usadas)
 
     #seleciona as bacias utilizadas
@@ -114,7 +115,7 @@ def parser_dados_tok(modelo:str, arquivo:str, data_string:str=None, hoje:bool=Fa
     # nomeia as bacias
     df_.index = lista_bacias
 
-    if modelo not in ['MERGE', 'MERGE-TOK10']:
+    if modelo not in ['MERGE','IMERG','MERGE-TOK10', 'IMERG-TOK10']:
         horizonte_previsao = []
         for dia in range(0,14):
             
@@ -148,22 +149,20 @@ def sobe_previsao_no_banco(caminho_bancodedados:str,df_final:pd.DataFrame, model
 
 
     txt_json = df_final.reset_index().to_json(orient='records')
-    data_requisitada = data_anterior if modelo == 'MERGE' else data
+    data_requisitada = data_anterior if modelo in ['MERGE','IMERG'] else data
 
-    if modelo in ['MERGE', 'MERGE-TOK10']:
+    if modelo in ['MERGE','IMERG','MERGE-TOK10','IMERG-TOK10']:
         bd = shelve.open(f'{caminho_bancodedados}/chuva_observada.db')
         bd[data_requisitada.format('DD-MM-YYYY')] = txt_json
         bd.close()
-        print('Dados salvos no banco')
+        log.info('Dados salvos no banco')
     
     else:
         bd = shelve.open(f'{caminho_bancodedados}/chuva_prevista.db')
         bd[f'tok_{modelo}_{data_string}'] = txt_json
         bd.close()
-
     
-    
-    return print(f"Dados do tok_{modelo}_{data_requisitada.format('DD-MM-YYYY')} carregados no banco")
+    return log.info(f"Dados do tok_{modelo}_{data_requisitada.format('DD-MM-YYYY')} carregados no banco")
 
 
 def deleta_pastas(path:str) -> str:
@@ -184,7 +183,7 @@ def deleta_pastas(path:str) -> str:
         except:
             shutil.rmtree(f'{path}/{item}')
     
-    return print(f'Arquivos dentro da pasta {path} deletados')
+    return log.info(f'Arquivos dentro da pasta {path} deletados')
     
 
 if __name__ == '__main__':

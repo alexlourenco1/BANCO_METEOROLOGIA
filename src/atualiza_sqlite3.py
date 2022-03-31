@@ -7,6 +7,7 @@ import shelve
 import pandas as pd
 import pendulum
 from src import config
+from src.logit import log
 
 ####################
 # DADOS DE ENTRADA #
@@ -77,7 +78,7 @@ def preenche_observado(caminho_banco:str, data_string:str=None, hoje:bool=False)
     c.close()
     bd.close()
 
-    return print('Dados de chuva observada preenchidos na tabela CHUVA_OBSERVADA')
+    return log.info('Dados de chuva observada preenchidos na tabela CHUVA_OBSERVADA')
 
 
 # PREENCHE OBSERVADO NO GEFS, EC E CFS
@@ -128,7 +129,7 @@ def preenche_observado_nas_previsoes(caminho_banco:str, data_string:str=None, ho
     conexao.commit()
     c.close()
 
-    return print(f'Dados de chuva observada preenchidos nas tabelas {tabelas}')
+    return log.info(f'Dados de chuva observada preenchidos nas tabelas {tabelas}')
 
 
 def preenche_previsoes_ECMWF(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
@@ -196,7 +197,7 @@ def preenche_previsoes_ECMWF(caminho_banco:str, data_string:str=None, hoje:bool=
     bd.close()
     bd_prev.close()
 
-    return print('Dados de chuva observada preenchidos na tabela ECMWF_BACIA')
+    return log.info('Dados de chuva observada preenchidos na tabela ECMWF_BACIA')
 
 def preenche_previsoes_GEFS(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
     """Preenche as previsões no arquivo .db com base no arquivo chuva_prevista.db.dat
@@ -264,7 +265,7 @@ def preenche_previsoes_GEFS(caminho_banco:str, data_string:str=None, hoje:bool=F
     bd.close()
     bd_prev.close()
 
-    return print('Dados de chuva observada preenchidos na tabela GEFS_BACIA')
+    return log.info('Dados de chuva observada preenchidos na tabela GEFS_BACIA')
 
 
 def preenche_previsoes_CFS(caminho_banco:str, data_string:str=None, hoje:bool=False) -> str:
@@ -333,7 +334,7 @@ def preenche_previsoes_CFS(caminho_banco:str, data_string:str=None, hoje:bool=Fa
     bd.close()
     bd_prev.close()
 
-    return print('Dados de chuva observada preenchidos na tabela CFS_BACIA')
+    return log.info('Dados de chuva observada preenchidos na tabela CFS_BACIA')
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ from typing import Any
 import pandas as pd
 import pendulum
 from src import config
+from src.logit import log
 
 caminho_bd = config.caminho_bancodedados
 #caminho_bd = r'C:\scripts\BOLETIM-ENEVA\mapas'
@@ -95,7 +96,7 @@ def main(hoje:bool=False, data_string:str=None) -> None:
     excel = pd.ExcelWriter(f'{caminho_saida_excel}/banco_de_dados_meteorologia.xlsx', engine='xlsxwriter')
     
     for tabela in tabelas:
-        print(f' Gerando {tabela[0]}')
+        log.info(f' Gerando {tabela[0]}')
         
         if tabela[0]=='CHUVA_DIARIA_CLIMA':
             
@@ -125,7 +126,7 @@ def main(hoje:bool=False, data_string:str=None) -> None:
     cursor.close()
     excel.save()
     
-    return print(f'>>>>>> Base em excel banco_de_dados_meteorologia_{data_requerida.format("YYYY")}.xlsx para power bi gerado !')
+    return log.info(f'>>>>>> Base em excel banco_de_dados_meteorologia_{data_requerida.format("YYYY")}.xlsx para power bi gerado !')
 
 if __name__ == '__main__':
 
